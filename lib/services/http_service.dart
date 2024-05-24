@@ -1,11 +1,9 @@
-
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class NewsService {
   final String apiKey = '5afcf8264abf4d82aea6c75c4ceb1090';
   final String baseUrl = 'https://newsapi.org/v2';
-
-  get http => null;
 
   Future<List<Article>> fetchTopHeadlines() async {
     final response = await http.get(
