@@ -1,6 +1,8 @@
 import 'package:examgetx/controllers/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../services/http_service.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -10,8 +12,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  late Future<List<Article>> items;
   final homeController = Get.find<HomeController>();
-
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    items = NewsService().fetchTopHeadlines()
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +30,26 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.orange,
       ),
       body: GetBuilder<HomeController>(
-        builder: (context){
-          return Center(
-            child: Text("Something",style: TextStyle(color: Colors.orange),),
+
+        builder: (context,){
+          return ListView.builder(
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: ListTile(
+                  leading: articles[index].urlToImage != null
+                      ? Image.network(
+                    articles[index].urlToImage,
+                    width: 100,
+                    fit: BoxFit.cover,
+                  )
+                      : null,
+                  title: Text(articles[index].title),
+                  subtitle: Text(articles[index].description),
+                  onTap: () => _openArticle(context, articles[index].url),
+                ),
+              );
+            },
           );
         },
       ),
@@ -44,3 +69,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
+
+// Center(
+// child: Text("Something",style: TextStyle(color: Colors.orange),),
+// );
