@@ -4,7 +4,9 @@ import '../controllers/home_controller.dart';
 import '../services/http_service.dart';
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key});
+  HomePage({super.key}) {
+    homeController.loadArticles();
+  }
 
   final homeController = Get.put(HomeController());
 
@@ -16,17 +18,15 @@ class HomePage extends StatelessWidget {
         title: Text("exam getX"),
         backgroundColor: Colors.orange,
       ),
-      body: GetX<HomeController>(
+      body: GetBuilder<HomeController>(
         builder: (controller) {
-          if (controller.isLoading) {
+          if (controller.articles.isEmpty) {
             return Center(child: CircularProgressIndicator());
-          } else if (controller.articles.isEmpty) {
-            return Center(child: Text('No articles found'));
           } else {
             return ListView.builder(
               itemCount: controller.articles.length,
               itemBuilder: (ctx, index) {
-                return itemForNews(controller.articles[index], index);
+                return itemForNews(controller.articles[index]);
               },
             );
           }
@@ -36,7 +36,7 @@ class HomePage extends StatelessWidget {
         color: Colors.transparent,
         child: MaterialButton(
           onPressed: () {
-           // homeController.callSecondPage(context);
+            // homeController.callSecondPage(context);
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18.0),
@@ -48,7 +48,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget itemForNews(Article article, int index) {
+  Widget itemForNews(Article article) {
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -67,7 +67,7 @@ class HomePage extends StatelessWidget {
             children: [
               article.urlToImage != null
                   ? Image.network(
-                article.urlToImage,
+                article.urlToImage!,
                 width: 100.0,
                 height: 100.0,
                 fit: BoxFit.cover,
@@ -86,6 +86,7 @@ class HomePage extends StatelessWidget {
           const SizedBox(height: 16.0),
           GestureDetector(
             onTap: () {
+              // Implement navigation to full article page or any other action
             },
             child: Text(
               article.url,

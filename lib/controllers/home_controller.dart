@@ -1,24 +1,16 @@
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import '../services/http_service.dart';
 
 class HomeController extends GetxController {
-  var isLoading = true;
-  var articles = <Article>[];
+  List<Article> articles = [];
 
-  @override
-  void onInit() {
-    fetchArticles();
-    super.onInit();
+  loadArticles() async {
+    var response =
+    await Network.GET(Network.API_GET_INFOS, Network.paramsArticle());
+    List<Article> articlesList = Network.parseArticles(response!);
+    print(articlesList.length);
+
+    articles = articlesList;
+    update();
   }
-
-  void fetchArticles() async {
-    try {
-      var fetchedArticles = await NewsService().fetchTopHeadlines();
-      articles.assignAll(fetchedArticles);
-    } finally {
-      isLoading;
-    }
-  }
-
 }
